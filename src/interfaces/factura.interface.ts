@@ -1,8 +1,8 @@
+import { ItemFactura } from "./itemfactura.interface";
 export interface Factura {
-    id_factura: number
-    fecha_hora: Date
-    id_paciente: number
-    id_doctor: number
-    servicios_consumidos: number[]
-    total: number
+    facturaId: number;
+    clienteId: number; 
+    fecha: string; 
+    serviciosConsumidos: ItemFactura[];
+    total: number;
 }

@@ -1,6 +1,6 @@
 export interface ProductoServicio {
-    id_producto_servicio: number
-    tipo: 'Servicio' | ' Producto'
+    id: number
+    tipo: 'producto' | 'servicio';
     nombre: string
     precio: number
 }
