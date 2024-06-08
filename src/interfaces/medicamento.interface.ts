@@ -3,4 +3,5 @@ export interface Medicamento {
     dosis: string
     frecuencia_horas: number
     duracion_dias: number
+    preciounitario ?: number
 }

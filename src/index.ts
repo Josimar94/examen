@@ -1,5 +1,6 @@
+import { Medicamento } from "./interfaces/medicamento.interface";
 
-type Usuario = {
+type Usuario = { 
     usuarioId: number;
     nombre: string;
     password: string;
@@ -50,12 +51,12 @@ type Receta = {
     medicamentos: Medicamento[];
 };
 
-type medicamento = {
-    nombre: string;
-    dosis: string;
-    frecuencia: string;
-    duracion: string;
-};
+// type Medicamento = {
+//     nombre: string;
+//     dosis: string;
+//     frecuencia: string;
+//     duracion: string;
+// };
 
 type ProductoServicio = {
     id: number;
@@ -564,7 +565,7 @@ crearDoctor('Dra. Laura Sánchez', 'Ortodoncia', [
 ]);
 
 crearReceta(1, 1, '2024-06-01', [
-    { nombre: 'Ibuprofeno', dosis: '200mg', frecuencia: 'Cada 8 horas', duracion: '5 días' },
+    { nombre: 'Ibuprofeno', dosis: '200mg', frecuencia_horas: 8, duracion_dias: 5},
 ]);
 
 crearProductoServicio('Limpieza Dental', 'servicio', 50);
