@@ -1,18 +1,11 @@
 import { readFileSync, writeFileSync } from 'fs';
-
+import { Cita } from '../cita.interface';
 // Definimos la interfaz Cita
-interface Cita {
-    citaId: number;
-    pacienteId: number;
-    doctorId: number;
-    fecha: string;
-    hora: string;
-    descripcion: string;
-    estado: string;
-}
+
+
 
 const direccionArchivoCitas = './data/citas.json';
-
+// 
 // Función para leer citas desde el archivo
 const lecturaCitas = (): Cita[] => {
     const archivo: string = readFileSync(direccionArchivoCitas, 'utf8');
