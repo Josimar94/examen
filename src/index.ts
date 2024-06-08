@@ -6,24 +6,9 @@ import { Horario } from "./interfaces/horario.interface";
 import { Factura } from "./interfaces/factura.interface";
 import { ProductoServicio } from "./interfaces/producto_servicio.interface";
 import { ItemFactura } from "./interfaces/itemfactura.interface";
+import { Receta } from "./interfaces/receta.interface";
+import { Cita } from "./interfaces/cita.interface";
 
-type Cita = {
-    citaId: number;
-    pacienteId: number;
-    doctorId: number;
-    fecha: string; 
-    hora: string; 
-    descripcion: string;
-    estado: 'programada' | 'cancelada' | 'completada';
-};
-
-type Receta = {
-    recetaId: number;
-    doctorId: number;
-    pacienteId: number;
-    fecha: string; 
-    medicamentos: Medicamento[];
-};
 
 
 let usuarioAutenticado: Usuario | null = null;
