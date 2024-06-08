@@ -1,10 +1,13 @@
+import { Receta } from "./receta.interface"
+
 export interface Paciente {
-    id_paciente: number
+    pacienteId: number
     nombre: string
-    fecha_nacimiento: Date
+    fechaNacimiento: string
     direccion: string
-    telefono: number
+    telefono: string
     alergias: string[]
-    medicamentos_actuales: string[]
-    condiciones_medicas: string[]
+    medicamentosActuales: string[]
+    condicionesMedicas: string[]
+    recetas : Receta[]
 }

@@ -1,37 +1,11 @@
 import { Medicamento } from "./interfaces/medicamento.interface";
-
-type Usuario = { 
-    usuarioId: number;
-    nombre: string;
-    password: string;
-    rol: 'admin' | 'doctor' | 'recepcionista';
-    habilitado: boolean;
-};
-
-type Paciente = {
-    pacienteId: number;
-    nombre: string;
-    fechaNacimiento: string; 
-    direccion: string;
-    telefono: string;
-    alergias: string[];
-    medicamentosActuales: string[];
-    condicionesMedicas: string[];
-    recetas: Receta[];
-};
-
-type Doctor = {
-    doctorId: number;
-    nombre: string;
-    especialidad: string;
-    horarios: Horario[];
-};
-
-type Horario = {
-    dia: string; 
-   horaInicio: string; 
-    horaFin: string; 
-};
+import { Usuario } from "./interfaces/usuario.interface";
+import { Paciente } from "./interfaces/paciente.interface";
+import { Doctor } from "./interfaces/doctor.interface";
+import { Horario } from "./interfaces/horario.interface";
+import { Factura } from "./interfaces/factura.interface";
+import { ProductoServicio } from "./interfaces/producto_servicio.interface";
+import { ItemFactura } from "./interfaces/itemfactura.interface";
 
 type Cita = {
     citaId: number;
@@ -51,32 +25,6 @@ type Receta = {
     medicamentos: Medicamento[];
 };
 
-// type Medicamento = {
-//     nombre: string;
-//     dosis: string;
-//     frecuencia: string;
-//     duracion: string;
-// };
-
-type ProductoServicio = {
-    id: number;
-    nombre: string;
-    tipo: 'producto' | 'servicio';
-    precio: number;
-};
-
-type Factura = {
-    facturaId: number;
-    clienteId: number; 
-    fecha: string; 
-    serviciosConsumidos: ItemFactura[];
-    total: number;
-};
-
-type ItemFactura = {
-    nombre: string;
-    precio: number;
-};
 
 let usuarioAutenticado: Usuario | null = null;
 
@@ -89,11 +37,12 @@ const productosServicios: ProductoServicio[] = [];
 const facturas: Factura[] = [];
 
 // Funciones de Autenticación de Usuario
-function crearUsuario(nombre: string, password: string, rol: 'admin' | 'doctor' | 'recepcionista'): void {
+function crearUsuario(nombre: string,  clave: string,carnet :number, rol: 'admin' | 'doctor' | 'recepcionista'): void {
     const nuevoUsuario: Usuario = {
-        usuarioId: usuarios.length + 1,
+        id_usuario: usuarios.length + 1,
+        carnet,
         nombre,
-        password,
+        clave,
         rol,
         habilitado: true,
     };
@@ -102,20 +51,20 @@ function crearUsuario(nombre: string, password: string, rol: 'admin' | 'doctor' 
 }
 
 function editarUsuario(usuarioId: number, nombre?: string, password?: string, rol?: 'admin' | 'doctor' | 'recepcionista', habilitado?: boolean): void {
-    const usuario = usuarios.find(u => u.usuarioId === usuarioId);
+    const usuario = usuarios.find(u => u.id_usuario === usuarioId);
     if (!usuario) {
         console.log('Usuario no encontrado.');
         return;
     }
     if (nombre) usuario.nombre = nombre;
-    if (password) usuario.password = password;
+    if (password) usuario.clave = password;
     if (rol) usuario.rol = rol;
     if (habilitado !== undefined) usuario.habilitado = habilitado;
     console.log(`Usuario actualizado: ${usuario.nombre}`);
 }
 
 function deshabilitarUsuario(usuarioId: number): void {
-    const usuario = usuarios.find(u => u.usuarioId === usuarioId);
+    const usuario = usuarios.find(u => u.id_usuario === usuarioId);
     if (!usuario) {
         console.log('Usuario no encontrado.');
         return;
@@ -125,7 +74,7 @@ function deshabilitarUsuario(usuarioId: number): void {
 }
 
 function autenticarUsuario(nombre: string, password: string): void {
-    const usuario = usuarios.find(usr => usr.nombre === nombre && usr.password === password && usr.habilitado);
+    const usuario = usuarios.find(usr => usr.nombre === nombre && usr.clave === password && usr.habilitado);
     if (usuario) {
         usuarioAutenticado = usuario;
         console.log(`Usuario autenticado: ${usuario.nombre}`);
@@ -284,12 +233,12 @@ function obtenerCitasPorFecha(fecha: string): Cita[] {
     return citasFecha;
 }
 
-function crearDoctor(nombre: string, especialidad: string, horarios: Horario[]): void {
+function crearDoctor(nombre: string, especialidad: 'Odontología' | 'Cirujano Oral', horario: Horario[]): void {
     const nuevoDoctor: Doctor = {
         doctorId: doctores.length + 1,
         nombre,
         especialidad,
-        horarios,
+        horario:[],
     };
     doctores.push(nuevoDoctor);
     console.log(`Doctor creado: ${nombre}`);
@@ -303,7 +252,7 @@ function editarDoctor(doctorId: number, nombre?: string, especialidad?: string, 
     }
     if (nombre) doctor.nombre = nombre;
     if (especialidad) doctor.especialidad = especialidad;
-    if (horarios) doctor.horarios = horarios;
+    if (horarios) doctor.horario= horario;
     console.log(`Doctor actualizado: ${doctor.nombre}`);
 }
 
@@ -331,7 +280,7 @@ function obtenerDoctor(doctorId: number): Doctor | undefined {
 function obtenerDoctoresDisponibles(fecha: string): Doctor[] {
     const dia = new Date(fecha).toLocaleString('es-ES', { weekday: 'long' });
     const doctoresDisponibles = doctores.filter(d =>
-        d.horarios.some(h => h.dia.toLowerCase() === dia.toLowerCase())
+        d.horario.some(h => h.dia.toLowerCase() === dia.toLowerCase())
     );
     console.log(`Doctores disponibles para la fecha ${fecha}:`, doctoresDisponibles);
     return doctoresDisponibles;
@@ -355,7 +304,7 @@ function validarDisponibilidadDoctor(doctorId: number, fecha: string): boolean {
         return false;
     }
     const dia = new Date(fecha).toLocaleString('es-ES', { weekday: 'long' });
-    const disponible = doctor.horarios.some(h => h.dia.toLowerCase() === dia.toLowerCase());
+    const disponible = doctor.horario.some(h => h.dia.toLowerCase() === dia.toLowerCase());
     console.log(`Disponibilidad del doctor ${doctor.nombre} para la fecha ${fecha}: ${disponible}`);
     return disponible;
 }
@@ -545,7 +494,7 @@ function obtenerTotalFacturacionPorMes(mes: number): number {
 }
 
 // Ejemplo de uso
-crearUsuario('admin', 'admin123', 'admin');
+crearUsuario('admin', 'admin123',12345, 'admin', );
 autenticarUsuario('admin', 'admin123');
 
 crearPaciente('Juan Pérez', '1980-05-15', 'Calle Principal 123', '123456789', ['Penicilina'], ['Aspirina'], ['Hipertensión']);
@@ -554,12 +503,12 @@ crearPaciente('María Gómez', '1990-10-20', 'Avenida Secundaria 456', '98765432
 programarCita(1, 1, '2024-06-10', '10:00', 'Limpieza Dental');
 programarCita(2, 2, '2024-06-12', '15:30', 'Consulta de Ortodoncia');
 
-crearDoctor('Dr. Carlos Martínez', 'Odontología General', [
+crearDoctor('Dr. Carlos Martínez', 'Odontología', [
     { dia: 'Lunes', horaInicio: '08:00', horaFin: '12:00' },
     { dia: 'Martes', horaInicio: '08:00', horaFin: '12:00' },
 ]);
 
-crearDoctor('Dra. Laura Sánchez', 'Ortodoncia', [
+crearDoctor('Dra. Laura Sánchez', 'Cirujano Oral', [
     { dia: 'Miércoles', horaInicio: '14:00', horaFin: '18:00' },
     { dia: 'Viernes', horaInicio: '14:00', horaFin: '18:00' },
 ]);
