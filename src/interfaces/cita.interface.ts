@@ -1,5 +1,11 @@
+
+// cita.interface.ts
 export interface Cita {
-    fecha_hora: Date
-    id_paciente: number
-    id_doctor: number
+    citaId: number;
+    pacienteId: number;
+    doctorId: number;
+    fecha: string;
+    hora: string;
+    descripcion: string;
+    estado: string;
 }
